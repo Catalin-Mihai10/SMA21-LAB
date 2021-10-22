@@ -1,5 +1,7 @@
 package SMA.Laborator4;
 
+import static android.Manifest.permission.FOREGROUND_SERVICE;
+
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class MyIntentService extends IntentService {
-   // public static final String FOREGROUND_SERVICE;
 
     public MyIntentService() {
         super("Load Image");
@@ -20,7 +21,6 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        try {
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
             final String channelID = "my channel id";
@@ -39,9 +39,6 @@ public class MyIntentService extends IntentService {
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .build();
-            startForeground(FOREGROUND_SERVICE, notification);
-        } catch (InterruptedException e){
-            Thread.currentThread().interrupt();
-        }
+            startForeground(Integer.parseInt(FOREGROUND_SERVICE), notification);
     }
 }

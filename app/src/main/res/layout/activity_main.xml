@@ -18,39 +18,45 @@
 
     <WebView
         android:id="@+id/wv"
-        android:layout_width="421dp"
-        android:layout_height="733dp"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="-1dp" />
-
-    <Button
-        android:id="@+id/LoadBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="581dp"
-        android:layout_marginEnd="203dp"
-        android:layout_marginBottom="102dp"
-        android:gravity="center"
-        android:text="Load in Background"
+        android:layout_width="352dp"
+        android:layout_height="436dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="101dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="194dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/LoadFor"
-        android:layout_width="wrap_content"
+        android:id="@+id/LoadBack"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="222dp"
-        android:layout_marginTop="581dp"
-        android:layout_marginEnd="62dp"
-        android:layout_marginBottom="102dp"
+        android:layout_marginTop="546dp"
+        android:layout_marginBottom="137dp"
         android:gravity="center"
-        android:text="Load Image on foreground"
+        android:onClick="loadImage"
+        android:text="Load in Background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/LoadFor"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/LoadFor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="546dp"
+        android:layout_marginBottom="137dp"
+        android:gravity="center"
+        android:onClick="loadImage"
+        android:text="Load in foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/LoadBack"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

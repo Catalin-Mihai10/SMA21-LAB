@@ -7,20 +7,6 @@
     tools:context=".MainActivity">
 
     <EditText
-        android:id="@+id/eSearch"
-        android:layout_width="177dp"
-        android:layout_height="56dp"
-        android:ems="10"
-        android:hint="January"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.114"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
-
-    <EditText
         android:id="@+id/eExpenses"
         android:layout_width="88dp"
         android:layout_height="41dp"
@@ -108,24 +94,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.462" />
 
-    <Button
-        android:id="@+id/bSearch"
-        android:layout_width="163dp"
-        android:layout_height="50dp"
-        android:onClick="clicked"
-        android:text="Search"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.895"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
-
     <Spinner
         android:id="@+id/Mspinner"
-        android:layout_width="120dp"
-        android:layout_height="36dp"
-        tools:layout_editor_absoluteX="27dp"
-        tools:layout_editor_absoluteY="415dp" />
+        android:layout_width="370dp"
+        android:layout_height="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.574" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

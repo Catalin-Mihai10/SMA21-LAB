@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
                 public void onCancelled(DatabaseError error) {
                 }
             });
-        
+
             currentMonth=sharedPreferences.getString("CurrentMonth", null);
     }
 

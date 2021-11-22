@@ -10,6 +10,8 @@ public class Payment {
     private String name;
     private String type;
 
+    public Payment() { }
+
     public Payment(String timestamp, double cost, String name, String type) {
         this.timestamp = timestamp;
         this.cost = cost;
@@ -29,4 +31,6 @@ public class Payment {
     public String getType() {
         return type;
     }
+
+    public String getTimestamp(){ return timestamp;}
 }

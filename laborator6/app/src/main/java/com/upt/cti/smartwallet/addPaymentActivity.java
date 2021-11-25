@@ -33,7 +33,7 @@ public class addPaymentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.other_activity_main);
+        setContentView(R.layout.add_payment);
 
         order = (TextView) findViewById(R.id.orderView);
         type = (TextView) findViewById(R.id.tOrderType);
@@ -107,12 +107,12 @@ public class addPaymentActivity extends AppCompatActivity {
     }
 
     private void save(String timestamp){
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", pOrder.getText().toString());
-        map.put("cost", pCost.getText().toString());
-        map.put("type", pType.getText().toString());
 
-        AppState.get().getDatabaseReference().child("wallet").child(timestamp).updateChildren(map);
+        AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("cost").setValue(Double.parseDouble(pCost.getText().toString()));
+        AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("name").setValue(pOrder.getText().toString());
+        AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("type").setValue(pType.getText().toString());
+
+        finish();
     }
 
 }

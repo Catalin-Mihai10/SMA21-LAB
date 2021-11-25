@@ -1,6 +1,8 @@
 package com.upt.cti.smartwallet;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,12 +29,33 @@ import ui.Payment;
 import ui.PaymentAdapter;
 
 public class OtherMainActivity  extends AppCompatActivity {
+
+    private static final String TAG_MONTH = "";
+
+    public enum Month {
+        January, February, March, April, May, June, July, August,
+        September, October, November, December;
+
+        public static int monthNameToInt(Month month) {
+            return month.ordinal();
+        }
+
+        public static Month intToMonthName(int index) {
+            return Month.values()[index];
+        }
+
+        public static int monthFromTimestamp(String timestamp) {
+            int month = Integer.parseInt(timestamp.substring(5, 7));
+            return month - 1;
+        }
+    }
     private DatabaseReference databaseReference;
     private List<Payment> payments = new ArrayList<>();
     private TextView tStatus;
-    private Button bPrevious;
-    private Button bNext;
     private ListView listPayments;
+    private final static String PREFERENCES_SETTINGS = "prefs_settings";
+    private SharedPreferences sharedPreferences;
+    private Integer currentMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -40,11 +63,14 @@ public class OtherMainActivity  extends AppCompatActivity {
         setContentView(R.layout.other_activity_main);
 
         tStatus = (TextView) findViewById(R.id.textView);
-        bPrevious = (Button) findViewById(R.id.bPrevious);
-        bNext = (Button) findViewById(R.id.bNext);
         listPayments = (ListView) findViewById(R.id.listView);
         final PaymentAdapter adapter = new PaymentAdapter(this, R.layout.item_payment, payments);
         listPayments.setAdapter(adapter);
+        sharedPreferences =  getSharedPreferences(PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
+
+        currentMonth = sharedPreferences.getInt(TAG_MONTH, -1);
+        if (currentMonth == -1)
+            currentMonth = Month.monthFromTimestamp(AppState.getCurrentTimeDate());
 
         // setup firebase
         final FirebaseDatabase database = FirebaseDatabase.getInstance("https://smart-wallet-27310-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -57,12 +83,13 @@ public class OtherMainActivity  extends AppCompatActivity {
                 System.out.println("onChild");
                 Payment payment = dataSnapshot.getValue(Payment.class);
                 if (payment != null) {
-                    payment.timestamp = dataSnapshot.getKey();
-                    if (!payments.contains(payment))
-                    {
-                        payments.add(payment);
+                    if(currentMonth == Month.monthFromTimestamp(dataSnapshot.getKey())) {
+                        payment.timestamp = dataSnapshot.getKey();
+                        if (!payments.contains(payment)) {
+                            payments.add(payment);
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
                 }
             }
 
@@ -84,10 +111,26 @@ public class OtherMainActivity  extends AppCompatActivity {
     public void clicked(View view) {
         switch (view.getId()) {
             case R.id.bAdd:
+                AppState.get().setDatabaseReference(databaseReference);
                 AppState.get().setCurrentPayment(null);
                 startActivity(new Intent(this, addPaymentActivity.class));
                 break;
+            case R.id.bNext:
+                ++currentMonth;
+                if(currentMonth == 12) currentMonth = 11;
+                sharedPreferences.edit().putInt(TAG_MONTH, currentMonth).apply();
+                System.out.println(Month.intToMonthName(currentMonth));
+                recreate();
+                break;
+            case R.id.bPrevious:
+                --currentMonth;
+                if(currentMonth == -1) currentMonth = 0;
+                sharedPreferences.edit().putInt(TAG_MONTH, currentMonth).apply();
+                System.out.println(Month.intToMonthName(currentMonth));
+                recreate();
+                break;
         }
     }
+
 
 }

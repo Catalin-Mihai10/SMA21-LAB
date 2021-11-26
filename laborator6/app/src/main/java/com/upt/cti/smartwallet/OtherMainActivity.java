@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -64,7 +65,7 @@ public class OtherMainActivity  extends AppCompatActivity {
 
         tStatus = (TextView) findViewById(R.id.textView);
         listPayments = (ListView) findViewById(R.id.listView);
-        final PaymentAdapter adapter = new PaymentAdapter(this, R.layout.item_payment, payments);
+        PaymentAdapter adapter = new PaymentAdapter(this, R.layout.item_payment, payments);
         listPayments.setAdapter(adapter);
         sharedPreferences =  getSharedPreferences(PREFERENCES_SETTINGS, Context.MODE_PRIVATE);
 
@@ -75,6 +76,14 @@ public class OtherMainActivity  extends AppCompatActivity {
         // setup firebase
         final FirebaseDatabase database = FirebaseDatabase.getInstance("https://smart-wallet-27310-default-rtdb.europe-west1.firebasedatabase.app/");
         databaseReference = database.getReference();
+
+        listPayments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AppState.get().setCurrentPayment(payments.get(i));
+                startActivity(new Intent(getApplicationContext(), addPaymentActivity.class));
+            }
+        });
 
         System.out.println("Aici");
         databaseReference.child("wallet").addChildEventListener(new ChildEventListener() {

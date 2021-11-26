@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -57,7 +58,7 @@ public class addPaymentActivity extends AppCompatActivity {
         }
     }
 
-    public void clicked(View view) {
+    public void clicked(View view) throws IOException {
         switch (view.getId()) {
             case R.id.bSave:
                 if (payment != null)
@@ -66,8 +67,12 @@ public class addPaymentActivity extends AppCompatActivity {
                     save(AppState.getCurrentTimeDate());
                 break;
             case R.id.bCancel:
-                if (payment != null)
+                if (payment != null) {
+                    DatabaseReference monthReference = FirebaseDatabase.getInstance().getReference().child("wallet").child(payment.timestamp);
+                    monthReference.keepSynced(true);
+                    AppState.get().updateLocalBackup(this, payment, false);
                     delete(payment.timestamp);
+                }
                 else
                     Toast.makeText(this, "Payment does not exist", Toast.LENGTH_SHORT).show();break;
         }
@@ -106,7 +111,11 @@ public class addPaymentActivity extends AppCompatActivity {
         finish();
     }
 
-    private void save(String timestamp){
+    private void save(String timestamp) throws IOException {
+        DatabaseReference monthReference = FirebaseDatabase.getInstance().getReference().child("wallet").child(timestamp);
+        monthReference.keepSynced(true);
+        Payment payment = new Payment(timestamp, Double.parseDouble(pCost.getText().toString()), pOrder.getText().toString(), pType.getText().toString());
+        AppState.get().updateLocalBackup(this, payment, true);
 
         AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("cost").setValue(Double.parseDouble(pCost.getText().toString()));
         AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("name").setValue(pOrder.getText().toString());

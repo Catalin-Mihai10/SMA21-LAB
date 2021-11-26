@@ -2,8 +2,10 @@ package ui;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 @IgnoreExtraProperties
-public class Payment {
+public class Payment implements Serializable {
 
     public String timestamp;
     private double cost;
@@ -33,4 +35,9 @@ public class Payment {
     }
 
     public String getTimestamp(){ return timestamp;}
+
+    public Payment copy(){
+        Payment copyOfPayment = new Payment(this.timestamp, this.cost, this.name, this.type);
+        return copyOfPayment;
+    }
 }

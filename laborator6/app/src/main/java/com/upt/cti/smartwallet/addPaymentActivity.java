@@ -68,7 +68,7 @@ public class addPaymentActivity extends AppCompatActivity {
                 break;
             case R.id.bCancel:
                 if (payment != null) {
-                    DatabaseReference monthReference = FirebaseDatabase.getInstance().getReference().child("wallet").child(payment.timestamp);
+                    DatabaseReference monthReference = FirebaseDatabase.getInstance("https://smart-wallet-27310-default-rtdb.europe-west1.firebasedatabase.app/").getReference().child("wallet").child(payment.timestamp);
                     monthReference.keepSynced(true);
                     AppState.get().updateLocalBackup(this, payment, false);
                     delete(payment.timestamp);
@@ -105,21 +105,24 @@ public class addPaymentActivity extends AppCompatActivity {
     }
 
     private void delete(String timestamp) {
-        AppState.get().getDatabaseReference().child("wallet").child(timestamp).removeValue();
-
+        if (AppState.isNetworkAvailable(this))
+            AppState.get().getDatabaseReference().child("wallet").child(timestamp).removeValue();
+        else  Toast.makeText(this, "Internet not available!", Toast.LENGTH_SHORT).show();
         // finishes the current activity and returns to the last activity on the stack
         finish();
     }
 
     private void save(String timestamp) throws IOException {
-        DatabaseReference monthReference = FirebaseDatabase.getInstance().getReference().child("wallet").child(timestamp);
+        DatabaseReference monthReference = FirebaseDatabase.getInstance("https://smart-wallet-27310-default-rtdb.europe-west1.firebasedatabase.app/").getReference().child("wallet").child(timestamp);
         monthReference.keepSynced(true);
         Payment payment = new Payment(timestamp, Double.parseDouble(pCost.getText().toString()), pOrder.getText().toString(), pType.getText().toString());
         AppState.get().updateLocalBackup(this, payment, true);
 
-        AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("cost").setValue(Double.parseDouble(pCost.getText().toString()));
-        AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("name").setValue(pOrder.getText().toString());
-        AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("type").setValue(pType.getText().toString());
+        if (AppState.isNetworkAvailable(this)) {
+            AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("cost").setValue(Double.parseDouble(pCost.getText().toString()));
+            AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("name").setValue(pOrder.getText().toString());
+            AppState.get().getDatabaseReference().child("wallet").child(timestamp).child("type").setValue(pType.getText().toString());
+        }
 
         finish();
     }

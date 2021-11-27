@@ -77,7 +77,6 @@ public class OtherMainActivity  extends AppCompatActivity {
         // setup firebase
         final FirebaseDatabase database = FirebaseDatabase.getInstance("https://smart-wallet-27310-default-rtdb.europe-west1.firebasedatabase.app/");
         databaseReference = database.getReference();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         listPayments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

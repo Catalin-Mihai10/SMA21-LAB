@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.upt.cti.smartwallet">
-
+    package="com.upt.cti.smartwallet"
+    >
+    <meta-data
+        android:name="com.google.firebase.m"
+        android:resource="@mipmap/ic_launcher" />
     <application
         android:name=".FIrebaseApp"
         android:allowBackup="true"
@@ -21,6 +24,16 @@
         </activity>
         <activity
             android:name=".addPaymentActivity"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SignupActivity"
             android:exported="true"
             >
             <intent-filter>

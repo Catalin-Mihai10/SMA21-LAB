@@ -1,12 +1,19 @@
 package com.upt.cti.smartwallet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +35,9 @@ public class addPaymentActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private TextView order,type,cost, tTimestamp;
     private ValueEventListener databaseListener;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private static final int REQ_SIGNIN = 3;
     private EditText pOrder,pType,pCost;
     private Payment payment;
 
@@ -35,6 +45,27 @@ public class addPaymentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_payment);
+
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null) {
+                    TextView tLoginDetail = (TextView) findViewById(R.id.tLoginDetail);
+                    TextView tUser = (TextView) findViewById(R.id.tUser);
+                    tLoginDetail.setText("Firebase ID: " + user.getUid());
+                    tUser.setText("Email: " + user.getEmail());
+
+                    AppState.get().setUserId(user.getUid());
+                    attachDBListener(user.getUid());
+                } else {
+                    startActivityForResult(new Intent(getApplicationContext(),
+                            SignupActivity.class), REQ_SIGNIN);
+                }
+            }
+        };;
 
         order = (TextView) findViewById(R.id.orderView);
         type = (TextView) findViewById(R.id.tOrderType);
@@ -115,7 +146,7 @@ public class addPaymentActivity extends AppCompatActivity {
     private void save(String timestamp) throws IOException {
         DatabaseReference monthReference = FirebaseDatabase.getInstance("https://smart-wallet-27310-default-rtdb.europe-west1.firebasedatabase.app/").getReference().child("wallet").child(timestamp);
         monthReference.keepSynced(true);
-        Payment payment = new Payment(timestamp, Double.parseDouble(pCost.getText().toString()), pOrder.getText().toString(), pType.getText().toString());
+        Payment payment = new Payment(timestamp, Double.parseDouble(pCost.getText().toString()), pOrder.getText().toString(), pType.getText().toString(), AppState.get().getUserID());
         AppState.get().updateLocalBackup(this, payment, true);
 
         if (AppState.isNetworkAvailable(this)) {
@@ -125,6 +156,59 @@ public class addPaymentActivity extends AppCompatActivity {
         }
 
         finish();
+    }
+
+    private void attachDBListener(String uid) {
+        // setup firebase database
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference();
+        AppState.get().setDatabaseReference(databaseReference);
+
+        databaseReference.child("wallet").child(uid).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String timestamp = AppState.get().getTimeStamp();
+                String user = AppState.get().getUserID();
+                AppState.get().getDatabaseReference().child("wallet").child(user).child(timestamp).child("cost").setValue(Double.parseDouble(pCost.getText().toString()));
+                AppState.get().getDatabaseReference().child("wallet").child(user).child(timestamp).child("name").setValue(pOrder.getText().toString());
+                AppState.get().getDatabaseReference().child("wallet").child(user).child(timestamp).child("type").setValue(pType.getText().toString());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
 }

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnCreateCont
         eIncome = (EditText) findViewById(R.id.eIncome);
         eExpenses = (EditText) findViewById(R.id.eExpenses);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://smart-wallet-27310-default-rtdb.europe-west1.firebasedatabase.app/");
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://smartwallet-4c9ab-default-rtdb.europe-west1.firebasedatabase.app/");
         databaseReference = database.getReference();
 
         monthsArray = new ArrayList<String>();

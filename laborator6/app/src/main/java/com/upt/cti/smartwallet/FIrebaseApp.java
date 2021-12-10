@@ -9,6 +9,6 @@ public class FIrebaseApp extends Application {
     public void onCreate() {
         super.onCreate();
         /* Enable disk persistence  */
-        FirebaseDatabase.getInstance("https://smart-wallet-27310-default-rtdb.europe-west1.firebasedatabase.app/").setPersistenceEnabled(true);
+        FirebaseDatabase.getInstance("https://smartwallet-4c9ab-default-rtdb.europe-west1.firebasedatabase.app/").setPersistenceEnabled(true);
     }
 }
